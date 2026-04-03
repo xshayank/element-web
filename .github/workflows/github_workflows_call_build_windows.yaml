@@ -6,12 +6,12 @@ on:
 
 jobs:
   prepare:
-    uses: element-hq/element-web/.github/workflows/build_desktop_prepare.yaml@develop
+    uses: xshayank/element-web/.github/workflows/build_desktop_prepare.yaml@develop
     with:
       config: "element.io/nightly"
 
   build-windows:
     needs: prepare
-    uses: element-hq/element-web/.github/workflows/build_desktop_windows.yaml@develop
+    uses: xshayank/element-web/.github/workflows/build_desktop_windows.yaml@develop
     with:
       arch: "x64"
