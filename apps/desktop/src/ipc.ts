@@ -11,6 +11,7 @@ import IpcMainEvent = Electron.IpcMainEvent;
 import { randomArray } from "./utils.js";
 import { getDisplayMediaCallback, setDisplayMediaCallback } from "./displayMediaCallback.js";
 import Store, { clearDataAndRelaunch } from "./store.js";
+import { getCurrentActivity } from "./rich-presence-ui.js";
 
 let focusHandlerAttached = false;
 ipcMain.on("loudNotification", function (): void {
@@ -218,6 +219,8 @@ ipcMain.on("ipcCall", async function (_ev: IpcMainEvent, payload) {
 });
 
 ipcMain.handle("getConfig", () => global.vectorConfig);
+
+ipcMain.handle("getRichPresenceActivity", () => getCurrentActivity());
 
 const initialisePromiseWithResolvers = Promise.withResolvers<void>();
 export const initialisePromise = initialisePromiseWithResolvers.promise;

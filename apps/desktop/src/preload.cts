@@ -22,6 +22,7 @@ const CHANNELS = [
     "ipcReply",
     "loudNotification",
     "preferences",
+    "rich-presence-activity",
     "seshat",
     "seshatReply",
     "setBadgeCount",
@@ -75,5 +76,19 @@ contextBridge.exposeInMainWorld("electron", {
     },
     async getSettingValue(settingName: string): Promise<any> {
         return ipcRenderer.invoke("getSettingValue", settingName);
+    },
+
+    richPresence: {
+        /**
+         * Register a callback that will be called whenever the Rich Presence
+         * activity changes.  Pass `null` to indicate the activity was cleared.
+         */
+        onActivityUpdate(callback: (event: IpcRendererEvent, activity: any) => void): void {
+            ipcRenderer.on("rich-presence-activity", callback);
+        },
+        /** Request the current Rich Presence activity from the main process. */
+        async getActivity(): Promise<any> {
+            return ipcRenderer.invoke("getRichPresenceActivity");
+        },
     },
 });

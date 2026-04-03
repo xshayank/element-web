@@ -48,6 +48,7 @@ import { setupMediaAuth } from "./media-auth.js";
 import { getBuildConfig } from "./build-config.js";
 import { getAsarPath } from "./asar.js";
 import { getIconPath } from "./icon.js";
+import { initRichPresence, destroyRichPresence } from "./rich-presence-ui.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -548,6 +549,8 @@ app.on("ready", async () => {
     ); // Use Mac OS 15+ native picker
 
     setupMediaAuth(global.mainWindow);
+
+    void initRichPresence();
 });
 
 app.on("window-all-closed", () => {
@@ -561,6 +564,7 @@ app.on("activate", () => {
 function beforeQuit(): void {
     global.appQuitting = true;
     global.mainWindow?.webContents.send("before-quit");
+    destroyRichPresence();
 }
 
 app.on("before-quit", beforeQuit);
