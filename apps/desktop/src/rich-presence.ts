@@ -102,6 +102,8 @@ export class RichPresenceServer extends EventEmitter {
     private server: net.Server | null = null;
     private socketPath: string | null = null;
     private currentActivity: RichPresenceActivity | null = null;
+    /** Socket that most recently set the current activity. */
+    private activityOwner: net.Socket | null = null;
 
     /** Start the server, trying discord-ipc-0 … discord-ipc-9 in order. */
     public async start(): Promise<void> {
@@ -181,8 +183,11 @@ export class RichPresenceServer extends EventEmitter {
         });
 
         socket.on("close", () => {
-            // When a client disconnects, clear the activity it provided.
-            this.setActivity(null);
+            // When a client disconnects, clear the activity only if it was the
+            // most recent owner – other connected clients keep their activity.
+            if (this.activityOwner === socket) {
+                this.setActivity(null, null);
+            }
         });
 
         socket.on("error", (err) => {
@@ -218,7 +223,10 @@ export class RichPresenceServer extends EventEmitter {
                 this.sendFrame(socket, OP_PONG, body);
                 break;
             case OP_CLOSE:
-                this.setActivity(null);
+                // Only clear the global activity if this socket owned it.
+                if (this.activityOwner === socket) {
+                    this.setActivity(null, null);
+                }
                 socket.destroy();
                 break;
             default:
@@ -283,7 +291,7 @@ export class RichPresenceServer extends EventEmitter {
                   }
                 : null;
 
-            this.setActivity(activity);
+            this.setActivity(activity, socket);
 
             // Acknowledge the command.
             const ackPayload = {
@@ -305,8 +313,9 @@ export class RichPresenceServer extends EventEmitter {
     }
 
     /** Update the stored activity and emit a change event. */
-    private setActivity(activity: RichPresenceActivity | null): void {
+    private setActivity(activity: RichPresenceActivity | null, owner: net.Socket | null): void {
         this.currentActivity = activity;
+        this.activityOwner = owner;
         this.emit("activity-changed", activity);
     }
 }
