@@ -20,6 +20,8 @@ export interface PresenceInfo {
     lastActiveAgo: number | undefined;
     currentlyActive: boolean | undefined;
     state: string | undefined;
+    /** Raw `status_msg` from the presence event. May contain embedded rich presence data. */
+    statusMsg: string | undefined;
 }
 
 export interface TimezoneInfo {
@@ -68,6 +70,7 @@ export function useUserfoHeaderViewModel({ member, roomId }: UserInfoHeaderViewM
         lastActiveAgo: undefined,
         currentlyActive: undefined,
         state: undefined,
+        statusMsg: undefined,
     };
 
     const enablePresenceByHsUrl = SdkConfig.get("enable_presence_by_hs_url");
@@ -99,6 +102,7 @@ export function useUserfoHeaderViewModel({ member, roomId }: UserInfoHeaderViewM
         precenseInfo.state = member.user.presence;
         precenseInfo.lastActiveAgo = member.user.lastActiveAgo;
         precenseInfo.currentlyActive = member.user.currentlyActive;
+        precenseInfo.statusMsg = member.user.presenceStatusMsg ?? undefined;
     }
 
     if (enablePresenceByHsUrl && enablePresenceByHsUrl[cli.baseUrl] !== undefined) {
