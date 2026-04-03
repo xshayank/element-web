@@ -2,16 +2,14 @@ name: Build Windows Desktop
 on:
   push:
     branches: [develop]
-  workflow_dispatch: # allows manual triggering
+  workflow_dispatch:
 
 jobs:
+  prepare:
+    uses: element-hq/element-web/.github/workflows/build_desktop_prepare.yaml@develop
+
   build-windows:
+    needs: prepare
     uses: element-hq/element-web/.github/workflows/build_desktop_windows.yaml@develop
     with:
-      arch: "x64"             # required: "x64", "ia32", or "arm64"
-      # ref: "develop"        # optional: git ref to checkout
-      # version: "20260403"   # optional: override version (nightly-style)
-      # sign: "true"          # optional: enable signing (needs eSigner environment)
-      # test: true            # optional: run tests after build (default: true)
-      # targets: "squirrel msi"  # optional: build targets (default: "squirrel msi")
-      # blob_report: false    # optional: whether to run blob report
+      arch: "x64"
