@@ -15,8 +15,3 @@ jobs:
       # test: true            # optional: run tests after build (default: true)
       # targets: "squirrel msi"  # optional: build targets (default: "squirrel msi")
       # blob_report: false    # optional: whether to run blob report
-    secrets:
-      # Only needed if `sign` is set:
-      # ESIGNER_USER_NAME: ${{ secrets.ESIGNER_USER_NAME }}
-      # ESIGNER_USER_PASSWORD: ${{ secrets.ESIGNER_USER_PASSWORD }}
-      # ESIGNER_USER_TOTP: ${{ secrets.ESIGNER_USER_TOTP }}
