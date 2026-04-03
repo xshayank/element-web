@@ -28,6 +28,7 @@ import createMatrixClient from "./utils/createMatrixClient";
 import Notifier from "./Notifier";
 import UserActivity from "./UserActivity";
 import Presence from "./Presence";
+import RichPresenceManager from "./RichPresenceManager";
 import dis from "./dispatcher/dispatcher";
 import DMRoomMap from "./utils/DMRoomMap";
 import Modal from "./Modal";
@@ -1097,6 +1098,7 @@ async function startMatrixClient(
     // the client
     if (!SettingsStore.getValue("lowBandwidth")) {
         Presence.start();
+        RichPresenceManager.start();
     }
 
     // Now that we have a MatrixClientPeg, update the Jitsi info
@@ -1201,6 +1203,7 @@ export function stopMatrixClient(unsetClient = true): void {
     UserActivity.sharedInstance().stop();
     SdkContextClass.instance.typingStore.reset();
     Presence.stop();
+    RichPresenceManager.stop();
     ActiveWidgetStore.instance.stop();
     IntegrationManagers.sharedInstance().stopWatching();
     Mjolnir.sharedInstance().stop();

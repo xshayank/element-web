@@ -68,7 +68,8 @@ type ElectronChannel =
     | "userAccessToken"
     | "homeserverUrl"
     | "serverSupportedVersions"
-    | "showToast";
+    | "showToast"
+    | "rich-presence-activity";
 
 declare global {
     // use `number` as the return type in all cases for globalThis.set{Interval,Timeout},
@@ -148,6 +149,11 @@ declare global {
         // Settings
         setSettingValue(settingName: string, value: any): Promise<void>;
         getSettingValue(settingName: string): Promise<any>;
+        // Rich Presence
+        richPresence: {
+            onActivityUpdate(callback: (event: Event, activity: any) => void): void;
+            getActivity(): Promise<any>;
+        };
     }
 
     interface DesktopCapturerSource {

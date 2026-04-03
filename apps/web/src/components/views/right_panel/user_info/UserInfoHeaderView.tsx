@@ -16,6 +16,8 @@ import { Container, type Member, type IDevice } from "../UserInfo";
 import PresenceLabel from "../../rooms/PresenceLabel";
 import CopyableText from "../../elements/CopyableText";
 import { UserInfoHeaderVerificationView } from "./UserInfoHeaderVerificationView";
+import { RichPresenceCard } from "./RichPresenceCard";
+import RichPresenceManager from "../../../../RichPresenceManager";
 
 export interface UserInfoHeaderViewProps {
     member: Member;
@@ -35,6 +37,7 @@ export const UserInfoHeaderView: React.FC<UserInfoHeaderViewProps> = ({
     const displayName = (member as RoomMember).rawDisplayName;
 
     let presenceLabel: JSX.Element | undefined;
+    let richPresenceCard: JSX.Element | undefined;
 
     if (vm.showPresence) {
         presenceLabel = (
@@ -46,6 +49,11 @@ export const UserInfoHeaderView: React.FC<UserInfoHeaderViewProps> = ({
                 coloured
             />
         );
+
+        const richActivity = RichPresenceManager.parseFromStatusMsg(vm.precenseInfo.statusMsg);
+        if (richActivity) {
+            richPresenceCard = <RichPresenceCard activity={richActivity} />;
+        }
     }
 
     return (
@@ -74,6 +82,7 @@ export const UserInfoHeaderView: React.FC<UserInfoHeaderViewProps> = ({
                         </Flex>
                     </Heading>
                     {presenceLabel}
+                    {richPresenceCard}
                     {vm.timezoneInfo && (
                         <Tooltip label={vm.timezoneInfo?.timezone ?? ""}>
                             <Flex align="center" className="mx_UserInfo_timezone">
